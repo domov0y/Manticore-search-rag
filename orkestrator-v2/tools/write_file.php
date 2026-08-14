@@ -5,21 +5,21 @@ $tools['write_file'] = [
         'type' => 'function',
         'function' => [
             'name' => 'write_file',
-            'description' => 'Записывает текстовый файл или добавляет текст в существующий файл',
+            'description' => 'Р—Р°РїРёСЃС‹РІР°РµС‚ С‚РµРєСЃС‚РѕРІС‹Р№ С„Р°Р№Р» РёР»Рё РґРѕР±Р°РІР»СЏРµС‚ С‚РµРєСЃС‚ РІ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ С„Р°Р№Р»',
             'parameters' => [
                 'type' => 'object',
                 'properties' => [
                     'path' => [
                         'type' => 'string',
-                        'description' => 'Путь к файлу'
+                        'description' => 'РџСѓС‚СЊ Рє С„Р°Р№Р»Сѓ'
                     ],
                     'content' => [
                         'type' => 'string',
-                        'description' => 'Текст для записи'
+                        'description' => 'РўРµРєСЃС‚ РґР»СЏ Р·Р°РїРёСЃРё'
                     ],
                     'append' => [
                         'type' => 'boolean',
-                        'description' => 'Добавить в конец файла вместо перезаписи',
+                        'description' => 'Р”РѕР±Р°РІРёС‚СЊ РІ РєРѕРЅРµС† С„Р°Р№Р»Р° РІРјРµСЃС‚Рѕ РїРµСЂРµР·Р°РїРёСЃРё',
                         'default' => false
                     ]
                 ],
@@ -38,7 +38,7 @@ function write_file($params)
     $append = !empty($params['append']);
 
     if ($path === '') {
-        return "Ошибка: не указан путь к файлу";
+        return "РћС€РёР±РєР°: РЅРµ СѓРєР°Р·Р°РЅ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ";
     }
 
     $flags = $append ? FILE_APPEND : 0;
@@ -46,8 +46,8 @@ function write_file($params)
     $result = file_put_contents($path, $content, $flags);
 
     if ($result === false) {
-        return "Ошибка: не удалось записать файл: " . $path;
+        return "РћС€РёР±РєР°: РЅРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїРёСЃР°С‚СЊ С„Р°Р№Р»: " . $path;
     }
 
-    return "Файл успешно записан: {$path} ({$result} байт)";
+    return "Р¤Р°Р№Р» СѓСЃРїРµС€РЅРѕ Р·Р°РїРёСЃР°РЅ: {$path} ({$result} Р±Р°Р№С‚)";
 }
