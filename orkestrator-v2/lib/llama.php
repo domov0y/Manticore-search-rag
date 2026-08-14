@@ -49,7 +49,7 @@ function sendToLlama( $messages, $tools=array(), $params=array()   )
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             CURLOPT_HTTPHEADER => $query_headers,
             CURLOPT_TIMEOUT => $config['timeout'],
             CURLOPT_SSL_VERIFYPEER => false,
