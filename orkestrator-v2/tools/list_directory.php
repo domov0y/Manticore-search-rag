@@ -5,13 +5,13 @@ $tools['list_directory'] = [
         'type' => 'function',
         'function' => [
             'name' => 'list_directory',
-            'description' => 'Âîçâğàùàåò ñîäåğæèìîå óêàçàííîãî êàòàëîãà',
+            'description' => 'Ğ’Ğ¾Ğ·Ğ²Ñ€Ğ°Ñ‰Ğ°ĞµÑ‚ ÑĞ¾Ğ´ĞµÑ€Ğ¶Ğ¸Ğ¼Ğ¾Ğµ ÑƒĞºĞ°Ğ·Ğ°Ğ½Ğ½Ğ¾Ğ³Ğ¾ ĞºĞ°Ñ‚Ğ°Ğ»Ğ¾Ğ³Ğ°',
             'parameters' => [
                 'type' => 'object',
                 'properties' => [
                     'path' => [
                         'type' => 'string',
-                        'description' => 'Ïóòü ê êàòàëîãó'
+                        'description' => 'ĞŸÑƒÑ‚ÑŒ Ğº ĞºĞ°Ñ‚Ğ°Ğ»Ğ¾Ğ³Ñƒ'
                     ]
                 ],
                 'required' => ['path']
