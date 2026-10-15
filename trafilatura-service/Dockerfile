@@ -10,7 +10,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Потом копируем сам код
-COPY main.py .
+COPY main-1.py main.py
 
 EXPOSE 5000
 
