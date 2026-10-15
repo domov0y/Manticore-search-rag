@@ -4,6 +4,10 @@ import requests
 from urllib.parse import urlparse
 import logging
 import chardet  # для автоопределения кодировки (установите: pip install chardet)
+import socket
+import ipaddress
+from urllib.parse import urlparse
+
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -20,6 +24,7 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 
+
 def is_safe_url(url):
     logger.debug(f"Проверка безопасности URL: {url}")
     try:
@@ -27,17 +32,43 @@ def is_safe_url(url):
         if parsed.scheme not in ('http', 'https'):
             logger.warning(f"Отклонён URL с неподдерживаемой схемой: {parsed.scheme}")
             return False
-        hostname = parsed.hostname or ''
-        blocked = ('localhost', '127.0.0.1', '::1', '0.0.0.0')
-        if hostname in blocked:
-            logger.warning(f"Отклонён локальный адрес: {hostname}")
+        
+        hostname = (parsed.hostname or '').lower()
+        
+        # 1. Проверка по имени
+        blocked_hostnames = {
+            'localhost',
+            '127.0.0.1',
+            '::1',
+            '0.0.0.0',
+            '169.254.169.254',
+            'metadata.google.internal',
+            'metadata',
+        }
+        
+        if hostname in blocked_hostnames:
+            logger.warning(f"Отклонён опасный hostname: {hostname}")
             return False
-        logger.debug(f"URL прошел проверку безопасности: {url}")
+        
+        # 2. Резолвим hostname в IP
+        try:
+            ip_str = socket.gethostbyname(hostname)
+            ip = ipaddress.ip_address(ip_str)
+        except (socket.gaierror, ValueError) as e:
+            logger.warning(f"Не удалось резолвить hostname {hostname}: {e}")
+            return False
+        
+        # 3. Проверяем, не внутренний ли это IP
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+            logger.warning(f"Отклонён внутренний/зарезервированный IP: {ip}")
+            return False
+            
+        logger.debug(f"URL прошел проверку безопасности: {url} → {ip}")
         return True
+        
     except Exception as e:
-        logger.error(f"Ошибка при разборе URL: {e}")
+        logger.error(f"Ошибка при проверке URL: {e}")
         return False
-
 @app.route('/extract', methods=['GET'])
 def extract_text():
     logger.info("Получен новый запрос на /extract")
