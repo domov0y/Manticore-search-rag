@@ -56,6 +56,6 @@ $tools['list_directory'] = [
             }
         }
 
-        return $result;
+        return json_encode($result);
     }
 ];
