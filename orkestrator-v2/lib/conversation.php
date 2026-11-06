@@ -2,16 +2,13 @@
 
 function log_llm($data)
 {
-    file_put_contents(
-        "logs/llm.log",
-        json_encode(
-            $data,
-            JSON_UNESCAPED_UNICODE
-        )."\n",
-        FILE_APPEND
-    );
-}
+    $file = SESSION_DIR . '/tools.jsonl';
+    $json = json_encode(  $data,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES    );
 
+    if ($json !== false) {
+        file_put_contents(   $file,    $json . PHP_EOL,  FILE_APPEND | LOCK_EX );
+    }
+}
 
 $tools = [];
 
@@ -39,8 +36,8 @@ function exec_tool($asktool)
       $tool_command = $tools[$tool_name]['command'];
       $tool_answer = call_user_func($tool_command, $tool_args);
     }
-    else 
-    $tool_answer = "Èíñòðóìåíò íå íàéäåí";
+    else
+    $tool_answer = "Ð¸Ð½ÑÑ‚Ñ€ÑƒÐ¼ÐµÐ½Ñ‚ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½";
 
 
    $tmp=[
@@ -73,10 +70,10 @@ function  llm_conversation( $conversation, $tools=array(), $parameters=array() )
         "tool_calls" => $response['choices'][0]['message']['tool_calls']
       ];
 
-
+      log_llm( $conversation[ array_key_last($conversation) ] );
       foreach ($response['choices'][0]['message']['tool_calls'] as $asktool) {
-       // print_r($asktool);
         $conversation[] = exec_tool($asktool);
+        log_llm( $conversation[ array_key_last($conversation) ] );
       }
     } else {
       $conversation[] = $response['choices'][0]['message'];
@@ -84,7 +81,5 @@ function  llm_conversation( $conversation, $tools=array(), $parameters=array() )
       break;
     }
   }
-
-  if (isset($parameters['log']) && $parameters['log']=='Y') log_llm($conversation) ;
   return $result;
 }
