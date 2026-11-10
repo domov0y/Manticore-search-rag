@@ -56,12 +56,27 @@ function sendToLlama( $messages, $tools=array(), $params=array()   )
             CURLOPT_SSL_VERIFYHOST => false
 
         ]);
-        
+
+	if (defined('LLM_EXCHANGE_LOG') && LLM_EXCHANGE_LOG) {
+    log_llm('exchange', [
+        'direction' => 'REQUEST',
+        'payload' => $payload
+    ]);
+}
         $response = curl_exec($ch);
         $error = curl_error($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
         curl_close($ch);
+
+	if (defined('LLM_EXCHANGE_LOG') && LLM_EXCHANGE_LOG) {
+    log_llm('exchange', [
+        'direction' => 'RESPONSE',
+        'http_code' => $httpCode,
+        'response' => $response,
+        'error' => $error
+    ]);
+}
+	
         if ($error) {
             throw new Exception("CURL Error: {$error}");
         }
