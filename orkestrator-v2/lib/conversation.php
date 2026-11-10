@@ -1,8 +1,8 @@
 <?php
 
-function log_llm($data)
+function log_llm($filename, $data)
 {
-    $file = SESSION_DIR . '/tools.jsonl';
+    $file = SESSION_DIR . '/' . basename($filename) . ".jsonl";
     $json = json_encode(  $data,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES    );
 
     if ($json !== false) {
@@ -70,10 +70,10 @@ function  llm_conversation( $conversation, $tools=array(), $parameters=array() )
         "tool_calls" => $response['choices'][0]['message']['tool_calls']
       ];
 
-      log_llm( $conversation[ array_key_last($conversation) ] );
+      log_llm( 'tools' , $conversation[ array_key_last($conversation) ] );
       foreach ($response['choices'][0]['message']['tool_calls'] as $asktool) {
         $conversation[] = exec_tool($asktool);
-        log_llm( $conversation[ array_key_last($conversation) ] );
+        log_llm('tools', $conversation[ array_key_last($conversation) ] );
       }
     } else {
       $conversation[] = $response['choices'][0]['message'];
@@ -81,5 +81,7 @@ function  llm_conversation( $conversation, $tools=array(), $parameters=array() )
       break;
     }
   }
+
+  if (isset($parameters['log']) && $parameters['log']=='Y') log_llm($conversation) ;
   return $result;
 }
