@@ -3,6 +3,10 @@
 function log_llm($filename, $data)
 {
     $file = SESSION_DIR . '/' . basename($filename) . ".jsonl";
+
+//    $dir = dirname($file);
+//    if (!is_dir($dir)) {        mkdir($dir, 0775, true);    }
+
     $json = json_encode(  $data,  JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES    );
 
     if ($json !== false) {
@@ -33,8 +37,14 @@ function exec_tool($asktool)
 
     if (isset($tools[$tool_name]))
     {
+      echo "\n[TOOL] Выполняется: {$tool_name}\n";
+      echo "[ARGS] " . json_encode( $tool_args, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . "\n";
+      $start_time=microtime(true);
+
       $tool_command = $tools[$tool_name]['command'];
       $tool_answer = call_user_func($tool_command, $tool_args);
+      $duration=microtime(true) -$start_time;
+      echo "[DONE] {$tool_name} ({$duration} сек.)\n";
     }
     else
     $tool_answer = "инструмент не найден";
@@ -59,7 +69,7 @@ function  llm_conversation( $conversation, $tools=array(), $parameters=array() )
 
 
 
-   for ($i = 0; $i < 10; $i++) {
+   for ($i = 0; $i < 100; $i++) {
     $response = sendToLlama( $conversation, $tools, $parameters );
 
     if (isset($response['choices'][0]['message']['tool_calls'])) {
@@ -75,13 +85,24 @@ function  llm_conversation( $conversation, $tools=array(), $parameters=array() )
         $conversation[] = exec_tool($asktool);
         log_llm('tools', $conversation[ array_key_last($conversation) ] );
       }
-    } else {
+    }
+    else
+    {
       $conversation[] = $response['choices'][0]['message'];
+      if (trim($message['content'] ?? '') === '') {
+        echo "\n[WARN] Модель вернула пустой ответ. Просим сформировать итог.\n";
+
+        $conversation[] = [
+            'role' => 'user',
+            'content' => 'Продолжи выполнение предыдущего запроса, учитывая весь контекст диалога.'
+        ];
+        continue;
+      }
+
       $result=$response['choices'][0]['message'];
       break;
     }
   }
 
-  if (isset($parameters['log']) && $parameters['log']=='Y') log_llm($conversation) ;
   return $result;
 }
