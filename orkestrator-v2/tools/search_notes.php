@@ -1,12 +1,12 @@
 <?php
-
+ 
 $tools['search_facts']=[
 'description'=>
             [
                 'type' => 'function',
                 'function' => [
                     'name' => 'search_facts',
-                    'description' => 'ïîèñê èíôîðìàöèè â çàïèñíîé êíèæêå',
+                    'description' => 'Ã¯Ã®Ã¨Ã±Ãª Ã¨Ã­Ã´Ã®Ã°Ã¬Ã Ã¶Ã¨Ã¨ Ã¢ Ã§Ã Ã¯Ã¨Ã±Ã­Ã®Ã© ÃªÃ­Ã¨Ã¦ÃªÃ¥',
                 ]
             ],
 
@@ -58,7 +58,7 @@ $tools['add_fact']=[
                 'type' => 'function',
                 'function' => [
                     'name' => 'add_fact',
-                    'description' => 'äîáàâëåíèå íîâîé çàïèñè â çàïèñíóþ êíèæêó',
+                    'description' => 'Ã¤Ã®Ã¡Ã Ã¢Ã«Ã¥Ã­Ã¨Ã¥ Ã­Ã®Ã¢Ã®Ã© Ã§Ã Ã¯Ã¨Ã±Ã¨ Ã¢ Ã§Ã Ã¯Ã¨Ã±Ã­Ã³Ã¾ ÃªÃ­Ã¨Ã¦ÃªÃ³',
                 ]
             ],
 
