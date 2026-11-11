@@ -6,7 +6,7 @@ $tools['search_facts']=[
                 'type' => 'function',
                 'function' => [
                     'name' => 'search_facts',
-                    'description' => 'ïîèñê èíôîðìàöèè â çàïèñíîé êíèæêå',
+                    'description' => 'Поиск в записной книжке',
                 ]
             ],
 
@@ -58,7 +58,7 @@ $tools['add_fact']=[
                 'type' => 'function',
                 'function' => [
                     'name' => 'add_fact',
-                    'description' => 'äîáàâëåíèå íîâîé çàïèñè â çàïèñíóþ êíèæêó',
+                    'description' => 'добавление записи в записную книжку',
                 ]
             ],
 
