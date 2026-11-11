@@ -1,4 +1,5 @@
 <?php
+//lib/conversation.php
 
 function log_llm($filename, $data)
 {
@@ -69,7 +70,7 @@ function  llm_conversation( $conversation, $tools=array(), $parameters=array() )
 
 
 
-   for ($i = 0; $i < 100; $i++) {
+   for ($i = 0; $i < 10; $i++) {
     $response = sendToLlama( $conversation, $tools, $parameters );
 
     if (isset($response['choices'][0]['message']['tool_calls'])) {
@@ -88,21 +89,19 @@ function  llm_conversation( $conversation, $tools=array(), $parameters=array() )
     }
     else
     {
-      $conversation[] = $response['choices'][0]['message'];
+      $message=$response['choices'][0]['message'];
+      $conversation[] =$message; //$response['choices'][0]['message'];
       if (trim($message['content'] ?? '') === '') {
         echo "\n[WARN] Модель вернула пустой ответ. Просим сформировать итог.\n";
-
         $conversation[] = [
             'role' => 'user',
             'content' => 'Продолжи выполнение предыдущего запроса, учитывая весь контекст диалога.'
         ];
         continue;
       }
-
       $result=$response['choices'][0]['message'];
       break;
     }
   }
-
   return $result;
 }
